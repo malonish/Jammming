@@ -9,6 +9,7 @@ function App() {
 
   const[playListName , setPlayListName] = useState("New Playlist");
   const [playListTracks, setPlayListTracks] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   const updatePlayListName = useCallback((name) => {
     setPlayListName(name);
@@ -32,8 +33,6 @@ function App() {
     }, []
   );
 
-  const [searchResults, setSearchResults] = useState([]);
-
   const savePlaylist = useCallback(() => {
     const uris = playListTracks.map((track) => track.uri); 
     Spotify.savePlaylist(playListName,uris).then(() => {
@@ -42,9 +41,14 @@ function App() {
   }, [playListName, playListTracks]);
 
   const search = useCallback((text) => {
-    Spotify.search(text).then(setSearchResults);
-  }, []);
-
+    Spotify.search(text).then((inputs) =>  {
+      //Remove playlist tracks from the search results
+      const toInput = inputs.filter((input) => 
+        !playListTracks.some(p => p["id"] === input["id"])
+      );
+      setSearchResults(toInput);
+    });
+  }, [playListTracks]);
 
   return (
     <div className="app">
