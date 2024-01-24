@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import './SearchBar.css'
 
-function SearchBar(props){
+function SearchBar({onSearch}){
     const [text, setText] = useState([]);
 
     const handleTextChange = useCallback((event) => {
@@ -9,8 +9,8 @@ function SearchBar(props){
       }, []);
 
       const search = useCallback(() => {
-        props.onSearch(text);
-      }, [props.onSearch, text]);
+        onSearch(text);
+      }, [onSearch, text]);
 
     //map tracks to Track components via props 
     return (
